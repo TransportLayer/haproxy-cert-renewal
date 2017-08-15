@@ -14,21 +14,17 @@ except CalledProcessError:
     exit(1)
 
 for site in listdir(LETSENCRYPT_LIVE):
-        # Python 3.6+
-        # run(f"cd {LETSENCRYPT_LIVE}/{site}", shell=True, check=True)
-        # run(f"cat fullchain.pem privkey.pem > {HAPROXY_CERTS}/{site}.pem", shell=True, check=True)
-
-        # Python 3.5 and below
     try:
-        run("cd {}/{}".format(LETSENCRYPT_LIVE, site), shell=True, check=True)
+        site_dir = "{}/{}".format(LETSENCRYPT_LIVE, site)
+        print("Changing to directory {}".format(site_dir))
+        run("cd {}".format(site_dir), shell=True, check=True)
+        print("Creating combined pem file")
         run("cat fullchain.pem privkey.pem > {}/{}.pem".format(HAPROXY_CERTS, site), shell=True, check=True)
     except CalledProcessError:
-        # Python 3.6+
-        # print(f"Error combining pem file for site {site}")
-        # Python 3.5 and below
         print("Error combining pem file for site {}".format(site))
 
 try:
+    print("Reloading haproxy")
     run("service haproxy reload", shell=True, check=True)
 except CalledProcessError:
     print("Error reloading haproxy")
