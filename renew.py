@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from sys import exit,version_info
+from sys import exit
 from os import listdir
 from subprocess import run, CalledProcessError
 
@@ -8,7 +8,7 @@ LETSENCRYPT_LIVE = "/etc/letsencrypt/live"
 HAPROXY_CERTS = "/etc/haproxy/certs"
 
 try:
-    run("certbot renew --dry-run --agree-tos --non-interactive --preferred-challenges http --http-01-port 54321", shell=True, check=True)
+    run("certbot renew --agree-tos --non-interactive --preferred-challenges http --http-01-port 54321", shell=True, check=True)
 except CalledProcessError:
     print("Error renewing certificates")
     exit(1)
