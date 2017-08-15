@@ -23,7 +23,10 @@ for site in listdir(LETSENCRYPT_LIVE):
         run("cd {}/{}".format(LETSENCRYPT_LIVE, site), shell=True, check=True)
         run("cat fullchain.pem privkey.pem > {}/{}.pem".format(HAPROXY_CERTS, site), shell=True, check=True)
     except CalledProcessError:
-        print(f"Error combining pem file for site {site}")
+        # Python 3.6+
+        # print(f"Error combining pem file for site {site}")
+        # Python 3.5 and below
+        print("Error combining pem file for site {}".format(site))
 
 try:
     run("service haproxy reload", shell=True, check=True)
