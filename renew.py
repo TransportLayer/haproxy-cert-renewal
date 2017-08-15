@@ -1,6 +1,6 @@
-#!/usr/bin/env python3.6
+#!/usr/bin/env python3
 
-from sys import exit
+from sys import exit,version_info
 from os import listdir
 from subprocess import run, CalledProcessError
 
@@ -15,8 +15,13 @@ except CalledProcessError:
 
 for site in listdir(LETSENCRYPT_LIVE):
     try:
-        run(f"cd {LETSENCRYPT_LIVE}/{site}", shell=True, check=True)
-        run(f"cat fullchain.pem privkey.pem > {HAPROXY_CERTS}/{site}.pem", shell=True, check=True)
+        if version_info.major >= 3 and version_info.minor >= 6:
+            run(f"cd {LETSENCRYPT_LIVE}/{site}", shell=True, check=True)
+            run(f"cat fullchain.pem privkey.pem > {HAPROXY_CERTS}/{site}.pem", shell=True, check=True)
+        else:
+            # Just until I update Python on all of my systems.
+            run("cd {}/{}".format(LETSENCRYPT_LIVE, site), shell=True, check=True)
+            run("cat fullchain.pem privkey.pem > {}/{}.pem".format(HAPROXY_CERTS, site), shell=True, check=True)
     except CalledProcessError:
         print(f"Error combining pem file for site {site}")
 
