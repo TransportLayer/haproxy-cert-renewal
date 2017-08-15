@@ -14,14 +14,14 @@ except CalledProcessError:
     exit(1)
 
 for site in listdir(LETSENCRYPT_LIVE):
+        # Python 3.6+
+        # run(f"cd {LETSENCRYPT_LIVE}/{site}", shell=True, check=True)
+        # run(f"cat fullchain.pem privkey.pem > {HAPROXY_CERTS}/{site}.pem", shell=True, check=True)
+
+        # Python 3.5 and below
     try:
-        if version_info.major >= 3 and version_info.minor >= 6:
-            run(f"cd {LETSENCRYPT_LIVE}/{site}", shell=True, check=True)
-            run(f"cat fullchain.pem privkey.pem > {HAPROXY_CERTS}/{site}.pem", shell=True, check=True)
-        else:
-            # Just until I update Python on all of my systems.
-            run("cd {}/{}".format(LETSENCRYPT_LIVE, site), shell=True, check=True)
-            run("cat fullchain.pem privkey.pem > {}/{}.pem".format(HAPROXY_CERTS, site), shell=True, check=True)
+        run("cd {}/{}".format(LETSENCRYPT_LIVE, site), shell=True, check=True)
+        run("cat fullchain.pem privkey.pem > {}/{}.pem".format(HAPROXY_CERTS, site), shell=True, check=True)
     except CalledProcessError:
         print(f"Error combining pem file for site {site}")
 
